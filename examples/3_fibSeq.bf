@@ -8,7 +8,7 @@
 [>]<            go to last element in array
 [[>+<-]<]       shift element right
 >>[<+<+>>-]     mv s3 into s1 and s2
-<<[>>+<<-]		mv s1 into s3
+<<[>>+<<-]      mv s1 into s3
 >>>[<<+<+>>>-]  mv s4 into s1 and s2
 <<<[>>>+<<<-]   mv s1 into s4
 <-]             dec index
