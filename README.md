@@ -44,3 +44,4 @@ In the example directory are 5 examples that show the progress of how I learned 
     $ go run main/main.go examples/5_NValueSorting.bf 25 32 41 35 255
     [25 32 35 41]
    ```
+6. Optimized Sorting This works like the above program but runs in half as many operations
