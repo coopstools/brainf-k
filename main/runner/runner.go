@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func RunBF(code []byte, input ...byte) ([]byte, string) {
@@ -47,7 +48,8 @@ func RunBF(code []byte, input ...byte) ([]byte, string) {
 			}
 			i = scanLeft(i-1, code)
 		case '#': //extra code for dumping stack state
-			fmt.Println("dump", s.i, s.s[:17])
+			dump(s)
+			// fmt.Println("dump", s.i, s.s[:17])
 		}
 	}
 	return buf.Bytes(), fmt.Sprintf("%d %v %d", s.i, s.s[:17], s.c)
@@ -86,4 +88,14 @@ func scanRight(index int, code []byte) int {
 		index++
 	}
 	return -1
+}
+
+func dump(s stack) {
+	dumpSize := 17
+	svs := make([]string, dumpSize)
+	for i, v := range s.s[:dumpSize] {
+		svs[i] = fmt.Sprintf("%2d", v)
+	}
+	stackOut := "[" + strings.Join(svs, " ") + "]"
+	fmt.Println("dump", s.i, stackOut)
 }
