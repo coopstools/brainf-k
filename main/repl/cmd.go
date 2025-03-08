@@ -1,8 +1,9 @@
 package repl
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
+	"github.com/chzyer/readline"
 	"io"
 	"os"
 	"strconv"
@@ -21,21 +22,26 @@ type CLI struct {
 	stack stack
 
 	pointer int
-	hist    []rune
 }
 
 func (cli *CLI) Run() {
-	reader := bufio.NewReader(os.Stdin)
+	rl := NewReadline()
 	for {
 		cli.redraw()
-		fmt.Print(cli.msg + "> ")
-		command, e := reader.ReadString('\n')
-		if e == io.EOF {
-			return
+		rl.SetPrompt(cli.msg + "> ")
+		line, err := rl.Readline()
+		if errors.Is(err, readline.ErrInterrupt) {
+			if len(line) == 0 {
+				break
+			} else {
+				continue
+			}
+		} else if err == io.EOF {
+			break
 		}
-		command = strings.TrimSpace(command)
+		line = strings.TrimSpace(line)
 
-		cli.handleCommand(command)
+		cli.handleCommand(line)
 	}
 }
 
