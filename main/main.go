@@ -1,6 +1,7 @@
 package main
 
 import (
+	"coopstools/brainf-k/main/repl"
 	"coopstools/brainf-k/main/runner"
 	"errors"
 	"fmt"
@@ -12,7 +13,13 @@ import (
 
 func main() {
 	clArgs := os.Args
+	if len(clArgs) < 2 {
+		repl.New().Run()
+		return
+	}
+
 	for i, arg := range clArgs {
+		fmt.Println(arg)
 		if strings.Contains(arg, "main.go") {
 			clArgs = clArgs[i:]
 		}
