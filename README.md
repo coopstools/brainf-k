@@ -6,7 +6,7 @@ To run the BrainF-k REPL, just use the command
 make
 ```
 
-Please note that the REPL, at the moment, is lacking control flow, ie `[]`, and does not use history. Both features are planned.
+Please note that the REPL, at the moment, is lacking control flow, ie `[]`. This is the next planned feature.
 
 To run the code with one of the provided examples, make sure you are using th correct version of the go compiler and run
 ```bash
