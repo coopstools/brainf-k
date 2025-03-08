@@ -1,7 +1,14 @@
 # brainf-k
 A library containing an interpreter and examples
 
-To run the code, make sure you are using th correct version of the go compiler and run
+To run the BrainF-k REPL, just use the command
+```bash
+make
+```
+
+Please note that the REPL, at the moment, is lacking control flow, ie `[]`, and does not use history. Both features are planned.
+
+To run the code with one of the provided examples, make sure you are using th correct version of the go compiler and run
 ```bash
 go run main/main.go examples/1_hi.bf
 ```
