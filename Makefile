@@ -2,7 +2,7 @@
 BINARY_NAME=bf
 MAIN_PACKAGE=./main
 
-all: clean build
+all: clean build run
 
 clean:
 	echo "Cleaning..."
@@ -15,7 +15,6 @@ build: clean
 	chmod +x $(BINARY_NAME)
 
 run:
-	echo "Running..."
 	./$(BINARY_NAME)
 
 #
