@@ -64,10 +64,10 @@ func Compile(rawCmd string) Cmds {
 			pStack = append(pStack, p)
 			p++
 		case ']':
-			last_p := pStack[len(pStack)-1]
+			lastP := pStack[len(pStack)-1]
 			pStack = pStack[:len(pStack)-1]
-			cmds = append(cmds, Cmd{op: CTRL_RTN, value: last_p})
-			cmds[last_p].value = p
+			cmds = append(cmds, Cmd{op: CTRL_RTN, value: lastP})
+			cmds[lastP].value = p
 			p++
 		}
 	}
