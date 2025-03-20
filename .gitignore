@@ -1,6 +1,15 @@
 .idea/
+.vscode/
 .codegenie
 
-bf
+# Ignore everything
+*
+# except
+!examples/**
+!main/**
 
-examples/tmp.*
+!go.*
+!README.md
+!Makefile
+
+.DS_Store

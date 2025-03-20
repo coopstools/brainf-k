@@ -1,105 +1,89 @@
 package main
 
 import (
+	compiler "coopstools/brainf-k/main/compile"
 	"coopstools/brainf-k/main/repl"
 	"coopstools/brainf-k/main/runner"
+	"coopstools/brainf-k/main/tokenize"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	clArgs := os.Args
-	if len(clArgs) < 2 {
+	if len(os.Args) <= 1 {
 		repl.New().Run()
 		return
 	}
 
-	for i, arg := range clArgs {
-		fmt.Println(arg)
-		if strings.Contains(arg, "main.go") {
-			clArgs = clArgs[i:]
-		}
+	clArgs := os.Args[1:]
+
+	// Check for compile flag
+	compileMode := false
+	if clArgs[0] == "-c" {
+		compileMode = true
+		clArgs = clArgs[1:]
 	}
 
-	contents, err := readInCode(clArgs)
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, err.Error())
-	}
-
-	clArgs, opts := extractOpts(clArgs)
-	args := extractCodeArgs(clArgs)
-
-	results, stack := runner.RunBF(contents, args...)
-	if opts['d'] {
-		fmt.Println(stack)
-	}
-
-	if opts['s'] {
+	// Need filename argument
+	if len(clArgs) == 0 {
+		fmt.Fprintln(os.Stderr, "Error: No filename provided")
 		return
 	}
 
-	tf := func(vals []byte) string {
-		return fmt.Sprintf("%v", vals)
+	// Read input file
+	contents, err := readInCode(clArgs[0])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
 	}
-	if opts['c'] {
-		tf = func(vals []byte) string {
-			return string(vals)
+
+	if compileMode {
+		// Compile mode - output C file
+		tokens := tokenize.Tokenize(string(contents))
+		cCode := compiler.BuildIntoC(tokens)
+		outFile := filepath.Base(clArgs[0])
+		outFile = outFile[:len(outFile)-len(filepath.Ext(outFile))] + ".c"
+		err = os.WriteFile(outFile, []byte(cCode), 0644)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error writing output file:", err)
+			return
+		}
+		return
+	}
+	// take the remaining arguments and parse out all numbers; delimiter can be spaces or commas or both
+	var inputs []byte
+	for _, arg := range clArgs[1:] {
+		numStrings := strings.Split(arg, ",")
+		for _, numString := range numStrings {
+			num, err := strconv.Atoi(numString)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Error: Invalid number:", numString)
+				return
+			}
+			inputs = append(inputs, byte(num))
 		}
 	}
-	fmt.Println(tf(results))
+	fmt.Println(inputs)
+	// Interpret mode - run code directly
+	results, _ := runner.RunBF(contents, inputs...)
+	fmt.Print(string(results))
 }
 
-func extractOpts(args []string) ([]string, map[rune]bool) {
-	opts := make(map[rune]bool)
-	for i := 0; i < len(args); i++ {
-		if args[i][0] != '-' || len(args[i]) == 1 {
-			continue
-		}
-		for _, ropt := range args[i] {
-			opts[ropt] = true
-		}
-		if len(args)-1 == i {
-			args = args[:i-1]
-			continue
-		}
-		args = append(args[:i], args[i+1:]...)
-	}
-	return args, opts
-}
-
-func readInCode(clArgs []string) ([]byte, error) {
-	if len(clArgs) <= 1 {
-		return nil, errors.New("no filename supplied")
-	}
-	file, err := os.Open(clArgs[1])
+func readInCode(filename string) ([]byte, error) {
+	file, err := os.Open(filename)
 	if err != nil {
 		return nil, errors.New("could not open file: " + err.Error())
 	}
+	defer file.Close()
+
 	contents, err := io.ReadAll(file)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "\n%s\n", err.Error())
-		return nil, errors.New("could not pull file contents: " + err.Error())
+		return nil, errors.New("could not read file contents: " + err.Error())
 	}
 	return contents, nil
-}
-
-func extractCodeArgs(clArgs []string) []byte {
-	var args []byte
-	if len(clArgs) > 2 {
-		for _, arg := range os.Args[2:] {
-			v, err := strconv.Atoi(arg)
-			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "\ncould not parse value into int (0 to 255): %s\n", err.Error())
-			}
-			if v < 0 || v > 255 {
-				_, _ = fmt.Fprintf(os.Stderr, "\ncould not parse value into int (0 to 255): %d\n", v)
-			}
-			args = append(args, byte(v))
-		}
-	}
-	return args
 }

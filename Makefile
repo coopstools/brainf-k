@@ -1,27 +1,30 @@
 # Variables
 BINARY_NAME=bf
 MAIN_PACKAGE=./main
+FILE?=./examples/hello.bf
+FILE_NAME=$(notdir $(basename $(FILE) .bf))
+ARGS?=""
 
-all: clean build run
+default: clean build
+	@echo "Running..."
+	./$(BINARY_NAME)
 
 clean:
-	echo "Cleaning..."
+	@echo "Cleaning..."
 	go clean
-	rm -f $(BINARY_NAME)
+	@rm -f $(BINARY_NAME)
 
 build: clean
-	echo "Building..."
+	@echo "Building..."
 	go build -o $(BINARY_NAME) $(MAIN_PACKAGE)
 	chmod +x $(BINARY_NAME)
 
-run:
-	./$(BINARY_NAME)
+run: build
+	@echo "Running..."
+	./$(BINARY_NAME) $(FILE) $(ARGS)
 
-#
-# test:
-#     echo "Running tests..."
-#     go test ./...
-#
-# # Targets
-
-.PHONY: clean build run
+compile: build
+	@echo "Compiling..."
+	./$(BINARY_NAME) -c $(FILE)
+	gcc $(FILE_NAME).c -o $(FILE_NAME)
+	@rm $(FILE_NAME).c

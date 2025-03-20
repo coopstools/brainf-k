@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int i = 0;
+int *ptr;
+int inputc = 0;
+int inputptr = 0;
+int inputs[128];
+
+void inc() { ptr[i] = (ptr[i]+1)%256; }
+
+void dec() { ptr[i] = (ptr[i]+255)%256; }
+
+void movl() { i -= 1; }
+
+void movr() { i += 1; }
+
+void setFrom() {
+  if (inputptr >= inputc) {
+    ptr[i] = 0;
+    return;
+  }
+  ptr[i] = inputs[inputptr++];
+}
+
+void set(int v) { ptr[i] = v; }
+
+void out() { printf("%d ", ptr[i]); }
+
+void debug(int width) {
+  int k = i;
+  if (k < width) { k = width+1; }
+  printf("[");
+  for (int j = k-width; j <= k+width; j++) {
+    printf("%d", ptr[j]);
+    if (j < k+width) { printf("  "); }
+  }
+  printf("] \n");
+}
+
+// start custom code
+{{$funcs}}
+// stop custom code
+
+int buildInputs(int argc, char *argv[]) {
+  for (int i = 1; i < argc; i++) {
+    char *str = argv[i];
+    char *start = str;
+    char *end;
+
+    while (*start != '\0') {
+      long num = strtol(start, &end, 10);
+      if (start == end) {
+        if (*start != '\0') {
+          start++;
+        }
+      } else {
+        if (inputc >= 128) {
+            fprintf(stderr, "Too many numbers. Maximum 100.\n");
+            return 1;
+        }
+        inputs[inputc++] = (int)num;
+        start = end;
+      }
+    }
+  }
+  return 0;
+}
+
+int main(int argc, char *argv[]) {
+  ptr = (int *)calloc(sizeof(int), 16384);
+  int returnCode = buildInputs(argc, argv);
+  if (returnCode != 0) {
+    return returnCode;
+  }
+  f0();
+  free(ptr);
+  return 0;
+}

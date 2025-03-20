@@ -6,11 +6,21 @@ To run the BrainF-k REPL, just use the command
 make
 ```
 
-Please note that the REPL, at the moment, is lacking control flow, ie `[]`. This is the next planned feature.
-
 To run the code with one of the provided examples, make sure you are using th correct version of the go compiler and run
 ```bash
-go run main/main.go examples/1_hi.bf
+make run FILE=examples/3_fibSeq.bf ARGS="5"
+```
+
+To compile `.bf` files:
+```bash
+make compile FILE=examples/3_fibSeq.bf
+or
+make build
+./bf -c examples/3_fibSeq.bf
+```
+and then the code can be run as
+```bash
+./3_fibSeq 12
 ```
 
 ## Options
