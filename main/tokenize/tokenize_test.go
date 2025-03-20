@@ -1,9 +1,10 @@
 package tokenize
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestTokenize(t *testing.T) {
@@ -55,11 +56,11 @@ func TestTokenize_debug(t *testing.T) {
 	cmds := Tokenize(testCode)
 	expectedCmds := []Cmd{
 		{Op: INC_IND},
-		{Op: RW_DEBUG, Value: 1},
+		{Op: WR_DEBUG, Value: 1},
 		{Op: RD_IN, Value: 28},
 		{Op: INC_IND},
 		{Op: INC_IND},
-		{Op: RW_DEBUG, Value: 3},
+		{Op: WR_DEBUG, Value: 3},
 	}
 	require.Equal(t, len(expectedCmds), len(cmds))
 	for i, expectedCmd := range expectedCmds {
@@ -91,7 +92,7 @@ func TestTokenize_debugAndFlowControl(t *testing.T) {
 	expectedCmds := []Cmd{
 		{Op: CTRL_JMP, Value: 9},
 		{Op: INC_IND},
-		{Op: RW_DEBUG, Value: 3},
+		{Op: WR_DEBUG, Value: 3},
 		{Op: CTRL_JMP, Value: 5},
 		{Op: RD_IN, Value: 28},
 		{Op: INC_IND},

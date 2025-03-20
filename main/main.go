@@ -70,8 +70,8 @@ func main() {
 	}
 	fmt.Println(inputs)
 	// Interpret mode - run code directly
-	results, _ := runner.RunBF(contents, inputs...)
-	fmt.Print(string(results))
+	cmds := tokenize.Tokenize(string(contents))
+	runner.New(os.Stdout, os.Stderr).SetInputs(inputs).Run(cmds)
 }
 
 func readInCode(filename string) ([]byte, error) {

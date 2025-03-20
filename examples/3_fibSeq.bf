@@ -1,3 +1,4 @@
+<<+>>           set dumps to be sent to stderr
 ,               set fib index to user input; N less than 13
 -               first value is already found; so start with decrement of index
 >>+             set s2 value
@@ -15,3 +16,4 @@
 
 >>[>]<          goto end of array
 [.<]            print each element in array
+>>>>>>>######

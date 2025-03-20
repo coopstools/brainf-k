@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int i = 0;
+int i = 4;
 int *ptr;
 int inputc = 0;
 int inputptr = 0;
@@ -25,17 +25,41 @@ void setFrom() {
 
 void set(int v) { ptr[i] = v; }
 
-void out() { printf("%d ", ptr[i]); }
+void out() {
+  FILE* out = ptr[0] == 0 ? stdout : stderr;
+  int format = ptr[1];
+  switch(format) {
+    case 1:
+      fprintf(out, "%c", ptr[i]);
+      break;
+    case 2:
+      fprintf(out, "0x%x ", ptr[i]);
+      break;
+    default:
+      fprintf(out, "%d ", ptr[i]);
+  }
+}
 
-void debug(int width) {
+void debug(int width) { 
   int k = i;
   if (k < width) { k = width+1; }
-  printf("[");
+  FILE* out = ptr[2] == 0 ? stdout : stderr;
+  int format = ptr[3];
+  fprintf(out, "%d [", i);
   for (int j = k-width; j <= k+width; j++) {
-    printf("%d", ptr[j]);
-    if (j < k+width) { printf("  "); }
+    switch(format) {
+      case 1:
+        fprintf(out, "%c", ptr[j]);
+        break;
+      case 2:
+        fprintf(out, "0x%x", ptr[j]);
+        break;
+      default:
+        fprintf(out, "%d", ptr[j]);
+    }
+    if (j < k+width) { fprintf(out, "  "); }
   }
-  printf("] \n");
+  fprintf(out, "] \n");
 }
 
 // start custom code

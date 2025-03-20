@@ -15,7 +15,7 @@ var cmdLookup = map[tokenize.Op]string{
 	tokenize.DEC_IND: "movl();",
 	tokenize.INC_VAL: "inc();",
 	tokenize.DEC_VAL: "dec();",
-	tokenize.RW_OUT:  "out();",
+	tokenize.WR_OUT:  "out();",
 }
 
 func inject(cmds []tokenize.Cmd, depth int) string {
@@ -40,7 +40,7 @@ func inject(cmds []tokenize.Cmd, depth int) string {
 			code = fmt.Sprintf("%s  setFrom();\n", code)
 			continue
 		}
-		if cmd.Op == tokenize.RW_DEBUG {
+		if cmd.Op == tokenize.WR_DEBUG {
 			code = fmt.Sprintf("%s  debug(%d);\n", code, cmd.Value)
 		}
 		if v, ok := cmdLookup[cmd.Op]; ok {

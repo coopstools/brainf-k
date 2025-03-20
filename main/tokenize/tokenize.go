@@ -15,11 +15,11 @@ const (
 	INC_VAL  Op = 2
 	DEC_VAL  Op = 3
 	RD_IN    Op = 4
-	RW_OUT   Op = 5
+	WR_OUT   Op = 5
 	CTRL_JMP Op = 6
 	CTRL_RTN Op = 7
 
-	RW_DEBUG = 8
+	WR_DEBUG = 8
 )
 
 type Cmd struct {
@@ -77,7 +77,7 @@ func Tokenize(rawCmd string) []Cmd {
 		case ',':
 			scan = []rune{}
 		case '.':
-			cmds = append(cmds, Cmd{Op: RW_OUT})
+			cmds = append(cmds, Cmd{Op: WR_OUT})
 			p++
 		case '[':
 			cmds = append(cmds, Cmd{Op: CTRL_JMP})
@@ -89,11 +89,11 @@ func Tokenize(rawCmd string) []Cmd {
 			cmds[lastP].Value = p - lastP
 			p++
 		case '#':
-			if len(cmds) > 0 && cmds[len(cmds)-1].Op == RW_DEBUG {
+			if len(cmds) > 0 && cmds[len(cmds)-1].Op == WR_DEBUG {
 				cmds[len(cmds)-1].Value += 1
 				break
 			}
-			cmds = append(cmds, Cmd{Op: RW_DEBUG, Value: 1})
+			cmds = append(cmds, Cmd{Op: WR_DEBUG, Value: 1})
 			p++
 		}
 	}

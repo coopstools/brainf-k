@@ -23,27 +23,45 @@ and then the code can be run as
 ./3_fibSeq 12
 ```
 
-## Options
-### c - output as characters
-The default output is an array of byte values. The `-c` option allows output as a string.
+## Variations
+
+### Output Formatting
+
+*WARNING* The starting index when running the code will be 4, not 0. The first 4 bytes in the stack are used for system settings.
+```
+byte 0 - determines whether prints, `.`, are sent to stdout (0) or stderr (not 0)
+byte 1 - determines whether prints, `.`, are printed as ascii characters (1), hexadecimal values (2) or decimal values (0 or >2).
+byte 2 - determines whether dumps, `#`, are sent to stdout (0) or stderr (not 0)
+byte 3 - determines whether dumps, `#`, are printed as ascii characters (1), hexadecimal values (2) or decimal values (0 or >2). The preceding index in a dump will always be a decimal value.
+```
+
+Examples:
 ```bash
-$ go run main/main.go examples/1_hi.bf
-[72 73]
+$ make compile FILE=examples/3_fibSeq.bf && ./3_fibSeq 12 2> err.txt > out.txt
+Cleaning...
+go clean
+Building...
+go build -o bf ./main
+chmod +x bf
+Compiling...
+./bf -c examples/3_fibSeq.bf
+gcc 3_fibSeq.c -o 3_fibSeq
 
-$ go run main/main.go examples/1_hi.bf -c
-HI
+$ cat err.txt
+12 [233  144  89  55  34  21  13  8  5  3  2  1  1]
+
+$ cat out.txt
+1 1 2 3 5 8 13 21 34 55 89 144 233
 ```
 
-### d - dump stack
-If included, this option causes the stack to be dumped, inluding the final index, the first 17 values on the stack, and the number of operations performed during run time.
-```shell
-$ go run main/main.go examples/1_hi.bf -s
-1 [0 73 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 126
-[72 73]
-```
+Side Note: because of how stdout buffers work, dumps `#` will always be flushed/printed at the moment they are called, while prints `.` may not be flushed/printed until the end of execution of the program.
 
-### s - silent
-If included, this silences the result output. Note that `-d` supersedes this option.
+### Stack Dump
+In the BrainF**k code, the `#` can used to print a portion of the stack, centered around the current index, to stdout. Stringing multiple `#` will increase the width of the stack output. The total number of elements printed will be 2*<number of #> + 1.
+
+### Immediate Addressing
+When using the `,` operator in the BrainF**k code, it will default to drawing values from the argument list supplied at run time. The values can be comma or space delimited. The `,` also has an immediate mode where a value can be supplied in the code, such as in `<<,15>+`. Here, rather than taking from argument list, it will pull in the value `15`.
+
 
 ## Examples
 In the example directory are 5 examples that show the progress of how I learned BF.
