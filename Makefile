@@ -11,7 +11,8 @@ default: clean build
 
 clean:
 	@echo "Cleaning..."
-	go clean
+	(cd $(MAIN_PACKAGE) && go install)
+	(cd $(MAIN_PACKAGE) && go clean)
 	@rm -f $(BINARY_NAME)
 
 build: clean

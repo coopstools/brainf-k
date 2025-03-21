@@ -1,6 +1,14 @@
 # brainf-k
 A library containing an interpreter and examples
 
+## Setup
+
+This code was built on an ARM64 architecture running on a MacBook. It has not been tested in other environments, but shoud, in theory, still work. For your particular setup, you will need to install `go` and setup `GOROOT` evnironment variable, and install `gcc` for compiling the C code.
+
+If anybody asks, I will gladly add a dockerfile for building on various environments.
+
+## Usage
+
 To run the BrainF-k REPL, just use the command
 ```bash
 make
@@ -23,7 +31,7 @@ and then the code can be run as
 ./3_fibSeq 12
 ```
 
-## Variations
+## Variations in BF
 
 ### Output Formatting
 
