@@ -50,10 +50,10 @@ func (r *Runner) Run(cmds []tokenize.Cmd) {
 				out = r.stderr
 			}
 			switch r.s.s[1] {
-			case 0:
-				_, _ = fmt.Fprintf(out, "%d", r.s.out())
 			case 1:
-				_, _ = fmt.Fprintf(out, "%x", r.s.out())
+				_, _ = fmt.Fprintf(out, "%d", r.s.out())
+			case 2:
+				_, _ = fmt.Fprintf(out, "%02X", r.s.out())
 			default:
 				_, _ = fmt.Fprintf(out, "%c", r.s.out())
 			}
@@ -81,11 +81,11 @@ func (r *Runner) Reset() {
 }
 
 func (r *Runner) Draw(width int, repSelect byte) string {
-	rep := "%2d"
+	rep := "%3d"
 	if repSelect == 1 {
 		rep = "%c"
 	} else if repSelect == 2 {
-		rep = "0x%x"
+		rep = "0x%02X"
 	}
 	center := r.s.i
 	if center < width {
